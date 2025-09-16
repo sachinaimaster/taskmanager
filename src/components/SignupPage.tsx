@@ -8,7 +8,6 @@ interface SignupPageProps {
   onNavigateToLogin: () => void;
 }
 
-function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
 function SignupPage({ onBack, onSignupSuccess, onNavigateToLogin }: SignupPageProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
