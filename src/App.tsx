@@ -58,11 +58,11 @@ function App() {
   };
 
   if (currentPage === 'login') {
-    return <LoginPage onBack={handleBackToHome} onLoginSuccess={handleLoginSuccess} />;
+    return <LoginPage onBack={handleBackToHome} onLoginSuccess={handleLoginSuccess} onNavigateToSignup={handleSignup} />;
   }
 
   if (currentPage === 'signup') {
-    return <SignupPage onBack={handleBackToHome} onSignupSuccess={handleSignupSuccess} />;
+    return <SignupPage onBack={handleBackToHome} onSignupSuccess={handleSignupSuccess} onNavigateToLogin={handleLogin} />;
   }
 
   if (currentPage === 'dashboard') {

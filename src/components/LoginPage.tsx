@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 interface LoginPageProps {
   onBack: () => void;
   onLoginSuccess: () => void;
+  onNavigateToSignup: () => void;
 }
 
 function LoginPage({ onBack, onLoginSuccess }: LoginPageProps) {
@@ -127,12 +128,12 @@ function LoginPage({ onBack, onLoginSuccess }: LoginPageProps) {
             </a>
             <div className="text-gray-600 text-sm">
               Don't have an account?{' '}
-              <a
-                href="#"
+              <button
+                onClick={onNavigateToSignup}
                 className="text-sky-600 hover:text-sky-700 font-medium transition-colors duration-200"
               >
                 Sign up here
-              </a>
+              </button>
             </div>
           </div>
         </div>
