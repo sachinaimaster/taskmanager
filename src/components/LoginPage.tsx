@@ -24,7 +24,7 @@ function LoginPage({ onBack, onLoginSuccess, onNavigateToSignup }: LoginPageProp
     const { error } = await signIn(email, password);
     
     if (error) {
-      setError(error.message);
+      setError(error?.message || 'An unexpected authentication error occurred. Please try again.');
       setLoading(false);
     } else {
       onLoginSuccess();

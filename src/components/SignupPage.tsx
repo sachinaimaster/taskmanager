@@ -9,6 +9,7 @@ interface SignupPageProps {
 }
 
 function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
+function SignupPage({ onBack, onSignupSuccess, onNavigateToLogin }: SignupPageProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,7 +28,7 @@ function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
     const { error } = await signUp(email, password, name);
     
     if (error) {
-      setError(error.message);
+      setError(error?.message || 'An unexpected authentication error occurred. Please try again.');
       setLoading(false);
     } else {
       setSuccess('Account created successfully! You can now login.');
