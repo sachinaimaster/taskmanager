@@ -1,10 +1,29 @@
 import React from 'react';
+import { useAuth } from './contexts/AuthContext';
 import LoginPage from './components/LoginPage';
 import SignupPage from './components/SignupPage';
 import Dashboard from './components/Dashboard';
 
 function App() {
+  const { user, loading } = useAuth();
   const [currentPage, setCurrentPage] = React.useState<'home' | 'login' | 'signup' | 'dashboard'>('home');
+
+  // Show loading spinner while checking authentication
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-white flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-500 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // If user is authenticated, show dashboard
+  if (user && currentPage !== 'home') {
+    return <Dashboard onLogout={() => setCurrentPage('home')} />;
+  }
 
   const handleLogin = () => {
     setCurrentPage('login');
@@ -15,7 +34,19 @@ function App() {
   };
 
   const handleDashboard = () => {
+    if (user) {
+      setCurrentPage('dashboard');
+    } else {
+      setCurrentPage('login');
+    }
+  };
+
+  const handleLoginSuccess = () => {
     setCurrentPage('dashboard');
+  };
+
+  const handleSignupSuccess = () => {
+    setCurrentPage('login');
   };
 
   const handleBackToHome = () => {
@@ -27,11 +58,11 @@ function App() {
   };
 
   if (currentPage === 'login') {
-    return <LoginPage onBack={handleBackToHome} />;
+    return <LoginPage onBack={handleBackToHome} onLoginSuccess={handleLoginSuccess} />;
   }
 
   if (currentPage === 'signup') {
-    return <SignupPage onBack={handleBackToHome} />;
+    return <SignupPage onBack={handleBackToHome} onSignupSuccess={handleSignupSuccess} />;
   }
 
   if (currentPage === 'dashboard') {

@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { LogOut, Plus, CheckCircle2 } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface DashboardProps {
   onLogout: () => void;
 }
 
 function Dashboard({ onLogout }: DashboardProps) {
+  const { user, signOut } = useAuth();
   const [tasks, setTasks] = useState([
     'Finish homework',
     'Call John',
@@ -21,11 +23,20 @@ function Dashboard({ onLogout }: DashboardProps) {
     }
   };
 
+  const handleLogout = async () => {
+    await signOut();
+    onLogout();
+  };
   return (
     <div className="min-h-screen bg-gradient-to-br from-sky-100 via-blue-50 to-white p-4 font-opensans">
       <div className="max-w-2xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12 pt-8">
+          <div className="mb-4">
+            <p className="text-lg text-gray-600">
+              Welcome back, <span className="font-semibold text-sky-600">{user?.user_metadata?.name || user?.email}</span>!
+            </p>
+          </div>
           <h1 className="text-4xl sm:text-5xl font-bold text-gray-800 mb-4">
             Your Tasks
           </h1>
@@ -90,7 +101,7 @@ function Dashboard({ onLogout }: DashboardProps) {
         {/* Logout Button */}
         <div className="text-center">
           <button
-            onClick={onLogout}
+            onClick={handleLogout}
             className="bg-white hover:bg-red-50 text-red-600 hover:text-red-700 font-semibold py-4 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 border-2 border-red-200 hover:border-red-300 transform hover:-translate-y-0.5 flex items-center mx-auto"
           >
             <LogOut className="w-5 h-5 mr-2" />

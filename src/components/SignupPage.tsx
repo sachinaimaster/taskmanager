@@ -1,19 +1,45 @@
 import React, { useState } from 'react';
 import { ArrowLeft, User, Mail, Lock } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
 
 interface SignupPageProps {
   onBack: () => void;
+  onSignupSuccess: () => void;
 }
 
-function SignupPage({ onBack }: SignupPageProps) {
+function SignupPage({ onBack, onSignupSuccess }: SignupPageProps) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+  
+  const { signUp } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Signup attempt:', { name, email, password });
-    // Add signup logic here
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    const { error } = await signUp(email, password, name);
+    
+    if (error) {
+      setError(error.message);
+      setLoading(false);
+    } else {
+      setSuccess('Account created successfully! You can now login.');
+      setLoading(false);
+      // Clear form
+      setName('');
+      setEmail('');
+      setPassword('');
+      // Redirect to login after a short delay
+      setTimeout(() => {
+        onSignupSuccess();
+      }, 2000);
+    }
   };
 
   return (
@@ -42,6 +68,20 @@ function SignupPage({ onBack }: SignupPageProps) {
 
           {/* Signup Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl text-sm">
+                {error}
+              </div>
+            )}
+
+            {/* Success Message */}
+            {success && (
+              <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm">
+                {success}
+              </div>
+            )}
+
             {/* Name Field */}
             <div className="space-y-2">
               <label htmlFor="name" className="block text-sm font-semibold text-gray-700">
@@ -109,9 +149,10 @@ function SignupPage({ onBack }: SignupPageProps) {
             <div className="pt-4">
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-semibold py-4 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5 disabled:transform-none"
               >
-                Signup
+                {loading ? 'Creating account...' : 'Signup'}
               </button>
             </div>
           </form>
